@@ -8,7 +8,7 @@ gulp.task('default',function(callback) {
 	runSequence(
 	  'build-clean',
 	  [
-	    'build-images',  
+	    //'build-images',  
 	    'build-sprite',  
 	    'build-scripts', 
 	    'build-styles-less', 

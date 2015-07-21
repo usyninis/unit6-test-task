@@ -1,4 +1,4 @@
-var gulp       = require('gulp');
+/*var gulp       = require('gulp');
 var gutil = require('gulp-util');
 var imageop   = require('gulp-image-optimization');
 
@@ -27,4 +27,4 @@ gulp.task('build-images', function(){
   imgBuild
 	.pipe(gulp.dest(paths.BUILD_IMAGES))
 	.on('error', errorHandler);
-});
+});*/

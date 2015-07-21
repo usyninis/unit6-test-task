@@ -1,12 +1,13 @@
 //var React = require('react');
 
-var DemoComponent = require('./demo/DemoComponent');
-var Button = require('./demo/Button');
+var App = require('./app');
+
+
 
 
 React.render(
-  <DemoComponent />,
-  document.getElementById("example1")
+  <App />,
+  document.body
 );
 
 /* React.render(

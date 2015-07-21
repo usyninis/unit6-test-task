@@ -1,0 +1,80 @@
+.app-logo{
+	float:left;
+}
+
+.main-nav{
+	
+}
+.main-nav__item{
+  color: #fff;
+  display: block;
+  text-decoration: none;
+  padding: 15px 20px;
+}
+.main-nav__item_active{
+	border-bottom: 3px solid #f8f9f9;
+}
+
+.skip-type{
+	background: #fff;
+	width: 230px;
+	float: left;
+	margin:50px 10px;
+	border:2px solid #e7e7e7;
+	height: 300px;
+	text-align: center;
+	opacity: 0;
+	transform: scale(0.5);
+	transition: all 277ms ease;
+	&:hover{
+		cursor: pointer;
+		box-shadow: 0 0 0 3px #cee6f1;
+	}
+	&.skip-type_render{
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+.skip-type__icon{
+
+  margin: 20px 0 5px;
+  height: 80px;
+  line-height: 80px;
+  .icon{
+vertical-align: bottom;
+  }
+}
+.skip-type__name{
+display: table;
+  text-align: center;
+  width: 60%;
+  margin: 20px 0;
+  height: 60px;
+  padding: 0 20%;
+	div{
+		vertical-align: middle;
+	}
+}
+
+.form{
+width: 100%;
+background: #fff;
+padding: 12px;
+	border: 1px solid #e7e7e7;
+}
+.form__row{
+margin-bottom: 10px;
+}
+.form__row-label{
+	display: block;
+	color:#999;
+}
+.form__row-input{
+
+}
+.input{
+	border-radius: 3px;
+	border: 1px solid #e7e7e7;
+	width: 100%;
+	padding: 8px 12px;
+}
