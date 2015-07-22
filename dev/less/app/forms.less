@@ -1,0 +1,96 @@
+.form{
+width: 100%;
+
+}
+.form__row{
+margin-bottom: 10px;
+.clearfix();
+}
+.form__row_w50{
+	width: 48%;
+	float: left;
+}
+.form__row_first{
+	width: 48%;
+	margin-right: 2%;
+}
+.form__row_last{
+	width: 48%;
+	margin-left: 2%;
+}
+.form__row-label{
+	display: block;
+	color:#999;
+}
+
+.form__row-input{
+
+}
+.input{
+	border-radius: 3px;
+	border: 1px solid #e7e7e7;
+	width: 100%;
+	padding: 8px 12px;
+	
+	.border-box();
+	&.error{
+		border-color: red;
+	}
+}
+.form__button-add{
+	cursor: pointer;
+
+}
+
+.date-picker{
+	display: inline-block;
+	color: @color-blue;
+  padding: 4px 12px;
+  border: 1px solid;
+  .border-radius(20px);
+}
+
+.button{
+	width: 200px;
+	background: @color-blue;
+	color:#fff;
+	border: none;
+	.border-box();
+	padding: 0;
+	margin: 0 auto;
+	height: 30px;
+	line-height: 30px;
+	display: block;
+	.outline{
+		background: #fff;
+		color: @color-blue;
+	}
+}
+
+.checkbox{
+display: inline-block;
+  position: relative;
+  padding-left: 40px;
+  line-height: 30px;
+  height: 30px;
+  margin-right: 30px;
+	input{
+		display: none;
+	}
+}
+
+.checkbox__imit{
+	display: block;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #333;
+	  position: absolute;
+  left: 5px;
+  top: 5px;
+	.checkbox.checked &{
+		background: @color-blue;
+	}
+}
+.checkbox__label{
+
+}

@@ -6,10 +6,13 @@ module.exports = React.createClass({
   },
   render: function() {
   	return (
-      <div>
-        THIS IS STEP 3
-      </div>
+      <section className="s-complete">
+        <div className="s-content">
+          Готово
+          <div className="icon-complete"></div>
+        </div>
+      </section>
   	);
   }
-
+ 
 });

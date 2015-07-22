@@ -15,15 +15,18 @@ var Steps = {
 module.exports = React.createClass({
   getInitialState: function () {
     return {
-      step: 0	
+      step: 1,
+      appData: {
+        clients: [{name:"demo"}]
+      }
     };
   },
   setStepIndex: function() {
     this.setState({step:0});
   },
-  setStep: function(stepNumber) {
+  setStep: function(stepNumber,appData) {
     stepNumber = stepNumber>3 ? 3: (stepNumber<0?0:stepNumber);
-    this.setState({step:stepNumber});
+    this.setState({step:stepNumber,appData:appData});
   },
   render: function() {
     //var step = Steps[this.state.step];
@@ -35,22 +38,20 @@ module.exports = React.createClass({
     if(this.state.step>0) {
       content = React.createElement(
           Steps[this.state.step],
-          {handleSetStep:this.setStep}
+          {setStep:this.setStep,appData:this.state.appData}
         );
     } else {
       content = React.createElement(
           Steps["index"],
-          {handleSetStep:this.setStep}
+          {setStep:this.setStep,appData:this.state.appData}
         );
     }
     //var s = "Step1";
   	return (
       <Layout step={this.state.step}>
-        <section className="s-step">
-          <div className="s-content">
+       
            {content}           
-          </div>
-        </section>
+          
       </Layout>
   	);
   }

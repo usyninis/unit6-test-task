@@ -54,7 +54,7 @@ module.exports = React.createClass({
       <div className="skip-types">
         {this.props.types.map(function(type) {
           return (
-          <div onClick={this.props.handleSetStep.bind(null,1)} className="skip-type">
+          <div onClick={this.props.setStep.bind(null,1)} className="skip-type">
             <div className="skip-type__icon">
               <div className={"icon icon-inline icon-type"+type.id} />
             </div>
