@@ -13,25 +13,25 @@ module.exports = React.createClass({
           id: 1,
           name: "Посетители",
           icon: "type1",
-          description: "Посетители description",
+          description: "Пропуска для посещения одним человеком или группой лиц без въезда на личном транспорте.",
         },
         {
           id: 2,
           name: "Посетители и автомобили",
           icon: "type2",
-          description: "Посетители description",
+          description: "Пропуска для посещения одним человеком или группой лиц с въездом одного или нескольких автомобилей.",
         },
         {
           id: 3,
           name: "Курьерская доставка",
           icon: "type3",
-          description: "Посетители description",
+          description: "Пропуска для курьерских служб на транспорте. Нужно указать только номер автомобиля и компанию.",
         },
         {
           id: 4,
           name: "Ввоз и вывоз имущества",
           icon: "type4",
-          description: "Посетители description",
+          description: "Пропуска для осуществления ввоза или вывоза материального имущества через КПП.",
         },
       ]
     };
@@ -59,9 +59,9 @@ module.exports = React.createClass({
       <div className="s-content">
 	  <h2 className="title">Тип пропуска</h2>
       <div className="skip-types">
-        {this.props.types.map(function(type) {
+        {this.props.types.map(function(type, i) {
           return (
-          <div onClick={this.nextStep.bind(null,type.id)} className="skip-type">
+          <div onClick={this.nextStep.bind(null,type.id)} className={"skip-type"+(i==3?" last":"")}>
             <div className="skip-type__icon">
               <div className={"icon icon-inline icon-type"+type.id} />
             </div>

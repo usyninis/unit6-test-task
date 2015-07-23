@@ -1,3 +1,4 @@
+
 var Layout = require('./layout');
 
 /*var Steps = {
@@ -15,9 +16,10 @@ var Steps = {
 module.exports = React.createClass({
   getInitialState: function () {
     return {
-      step: 1,
+      step: 0,
       appData: {
-        clients: [{}]
+        clients: [{}],
+        oneDay: 1
       }
     };
   },

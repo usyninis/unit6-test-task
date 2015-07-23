@@ -446,11 +446,3 @@ $.fn.extend({
 	}
 });
 }));
-
-
-
-$(function() {
-
-	console.log('at code');
-
-});

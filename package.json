@@ -28,5 +28,7 @@
     "vinyl-source-stream": "^1.1.0",
     "yargs": "^3.11.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "moment": "^2.10.3"
+  }
 }

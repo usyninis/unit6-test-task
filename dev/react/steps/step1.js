@@ -1,37 +1,59 @@
 var Helper = require('./../helper');
+var moment = require('moment');
+
+var InputMixin = { 
+  handlerOnInputChange: function(e) {
+    //console.log(e.target);
+    //this.validateInput(e.target,'required');
+    if(this.props.validateOn) {
+      //console.log('validateOn');
+      //var $input = $(e.target);
+      this.validateInput(e.target);
+    }
+  },
+  validateInput: function(input) {
+    //console.log("validate: "+mask);
+    //console.log("validate-input: "+input);
+    //if(!mask) return false;
+    var $input = $(input);
+    var string = $input.val();
+    var pattern = $input.data("rule");
+    var isValid = Helper.validateString(string,pattern);
+      if(isValid) {
+        //errors = true;
+        $input.removeClass("error");
+      } else {
+        $input.addClass("error");
+      }
+
+    return isValid;
+  },
+};
 
 var FormRow = React.createClass({
-  onFocus: function(e) {
-    if(this.props.field.rule=='phone') {
-      
-    }
-    //this.props.handlerOnInputChange(e);
-  },
+  mixins: [InputMixin],
   componentDidMount: function() {
     if(this.refs.input) {
-	  $(this.refs.input.getDOMNode()).mask();
-	  var $input = $(this.refs.input.getDOMNode());
-	  var mask = $input.data("masked");
-	  /* if(mask) {
-		$input.mask(mask);
-	  } */
-	  //console.log(mask);
-	  switch(mask) {
-	    case "phone":
-		  var handlerOnInputChange = this.props.handlerOnInputChange;
-		  $input.mask("+7 (999) 999-99-99",{
-		    autoclear: false,
-			placeholder: " ",
-			completed: function() {
-			  handlerOnInputChange(this);
-			}
-		  });
-		break;
-	    case "date":
-		  $input.mask("00000-000",{autoclear:false});
-		break;   
-	  } 
-	} 
+  	  $(this.refs.input.getDOMNode()).mask();
+  	  var $input = $(this.refs.input.getDOMNode());
+  	  var mask = $input.data("masked");
+  	  /* if(mask) {
+  		$input.mask(mask);
+  	  } */
+  	  //console.log(mask);
+  	  switch(mask) {
+  	    case "phone":
+  		  //var handlerOnInputChange = this.props.handlerOnInputChange;
+  		  $input.on("keyup",this.handlerOnInputChange).mask("+7 (999) 999-99-99",{
+  		    autoclear: false,
+    			placeholder: " "
+  		  });
+  		break;
+  	    case "date":
+  		  $input.mask("00000-000",{autoclear:false});
+  		break;   
+  	  } 
+  	} 
   },
   render: function() {
     var field = this.props.field;
@@ -42,7 +64,7 @@ var FormRow = React.createClass({
     return (
       <div className={rowClassName}>
         <label className="form__row-label" for={field.name}>{field.label}</label> 
-        <input type={field.type} ref="input" data-rule={field.rule} data-masked={field.mask} className="input form__row-input" onFocus={this.onFocus} onChange={this.props.handlerOnInputChange} name={field.name} defaultValue={this.props.value} />
+        <input type={field.type} ref="input" data-rule={field.rule} data-masked={field.mask} className="input form__row-input" onChange={this.handlerOnInputChange} name={field.name} defaultValue={this.props.value} />
       </div>
     );
   }
@@ -54,7 +76,7 @@ var FormDate = require("./form-date");
 var FormClient = React.createClass({
   propTypes: {
     client: React.PropTypes.object,
-    handlerOnInputChange: React.PropTypes.function,
+    //handlerOnInputChange: React.PropTypes.function,
   },
   getInitialState: function() {
     return {
@@ -104,7 +126,7 @@ var FormClient = React.createClass({
         {this.props.fields.map(function(field) {
           //console.log(field);
           var value = client[field.name];
-          return <FormRow field={field} handlerOnInputChange={this.props.handlerOnInputChange} value={value} />;
+          return <FormRow field={field} value={value} validateOn={this.props.validateOn} />;
         }.bind(this))}
       </form>
     );
@@ -116,6 +138,7 @@ module.exports = React.createClass({
   propTypes: {
     appData: React.PropTypes.object.required
   },
+  mixins: [InputMixin],
   getInitialState: function () {
    // var appData = this.props.appData;
 	//if(!appData) {
@@ -123,9 +146,11 @@ module.exports = React.createClass({
 	 // appData.clients = [{}];
 	//}
 	//}
+  console.log(this.props.appData);
     return {
       //step: 1	
       appData: this.props.appData,
+      validateOn: false
       //formsCount: 1,
       //clients: [
         //{}
@@ -136,48 +161,6 @@ module.exports = React.createClass({
     return {
       
     };
-  },
-  validateInput: function(input) {
-    //console.log("validate: "+mask);
-    //console.log("validate-input: "+input);
-    //if(!mask) return false;
-	var $input = $(input);
-	var string = $input.val();
-	var pattern = $input.data("rule");
-	
-	return Helper.validateString(string,pattern);
-	
-    /* var string = input.value;
-    var validate = false;
-    var rule = $(input).data("rule");
-    rule.split('|').map(function(rule) {
-      
-      switch(rule) {
-
-        case 'required': 
-        validate = (undefined == typeof string || string.length == 0) ? false : true;        
-        break;
-
-        case 'email':
-        var regExp = /^[\w-\.]+@[\w-]+\.[a-z]{2,10}$/i; 
-        validate = regExp.test(string);        
-        break;
-
-        case 'phone':
-        var regExp = /^\+\d[\d\(\)\ -]{4,20}\d$/; 
-        validate = regExp.test(string);        
-        break;
-
-      }
-      if( ! validate) {
-        //$(input).addClass("error");         
-        return false;
-      }
-    }); */
-
-    //$(input).removeClass("error");
-
-    return validate;
   },
   nextStep: function() {
     
@@ -212,38 +195,50 @@ module.exports = React.createClass({
       var $form = $(this);
       if($form.data("validate")) {
         $form.find("input").each(function() {
-          if(validateInput(this)) {
-            
-            $(this).removeClass("error");
-          } else {
+          if( ! validateInput(this)) {
             errors = true;
-            $(this).addClass("error");
           }
         });
       }
     });
-   
     
+    var $dateStart = $(".js-date-form").find("[name=date_start]");
+    var $dateEnd = $(".js-date-form").find("[name=date_end]");
+    var oneDay = $(".js-date-form").find("[name=oneDay]").val();
+    var dateStart = $dateStart.val();
+    var dateEnd = $dateEnd.val();
+    var mDateStart = moment(dateStart,"DD.MM.YYYY");
+    var mDateEnd = moment(dateEnd,"DD.MM.YYYY");
+    
+    //console.log(oneDay);
+
+   
+    if( ! mDateStart.isValid() ) {
+      $dateStart.addClass("error");
+      errors = true;
+    }
+    if( ! mDateEnd.isValid() ) {
+      $dateEnd.addClass("error");
+      errors = true;
+    }
+    if( mDateEnd.unix() <= mDateStart.unix() ) {
+      $dateEnd.addClass("error");
+      errors = true;
+    }
 
     if(!errors) {
       var appData = {
         clients: clients,
-		dateStart: $(".js-date-form").find("[name=date_start]").val(),
-		dateEnd: $(".js-date-form").find("[name=date_end]").val(),
+		    dateStart: dateStart,
+		    dateEnd: dateEnd,
+        oneDay: oneDay
       };
       this.props.setStep(2,appData);      
-    }
-  },
-  handlerOnInputChange: function(e) {
-    console.log(e.target);
-    //this.validateInput(e.target,'required');
-    if(this.validateInput(e.target)) {
-      //errors = true;
-      $(e.target).removeClass("error");
     } else {
-      $(e.target).addClass("error");
+      this.setState({validateOn:true});
     }
   },
+ 
   addClient: function() {
     var appData = this.state.appData;
     var clients = this.state.appData.clients;
@@ -251,6 +246,11 @@ module.exports = React.createClass({
     appData.clients = clients;
     this.setState({appData:appData});
   },
+ /* setOneDay: function(oneDay) {
+     var appData = this.state.appData;
+     appData.oneDay = oneDay;
+     this.setState({appData:appData});
+  },*/
   render: function() {
     var forms = [];
     /*var form = (
@@ -261,10 +261,10 @@ module.exports = React.createClass({
     }*/
     this.state.appData.clients.map(function(client) {
      //console.log(client);
-      forms.push(<FormClient client={client} handlerOnInputChange={this.handlerOnInputChange} />);
+      forms.push(<FormClient client={client} validateOn={this.state.validateOn} />);
     }.bind(this));
     //forms.push(form);
-    
+    //console.log(this.state.appData.oneDay);
   	return (
       <section className="s-step">
       <div className="s-content">
@@ -278,15 +278,17 @@ module.exports = React.createClass({
               </div>
             );
           })}
-          <a className="forms__button-add" onClick={this.addClient}>Добавить еще одного</a>
+          <a className="forms__button-add" onClick={this.addClient}>Добавить еще одного посетителя?</a>
         </div>
         <h2 className="title">Дата</h2>
         <div className="forms">
           
-            <FormDate dateStart={this.state.appData.dateStart} dateEnd={this.state.appData.dateEnd} />
+            <FormDate dateStart={this.state.appData.dateStart} dateEnd={this.state.appData.dateEnd} oneDay={this.state.appData.oneDay} validateOn={this.state.validateOn}  />
           
         </div>
+        <div className="form__row form__row_buttons">
         <button className="button" onClick={this.nextStep} type="button"><div className="inner">Продолжить</div></button>
+        </div>
       </div>
       </div>
       </section>

@@ -1,7 +1,15 @@
+var moment = require('moment');
+var momentRu = require('moment/locale/ru');
+moment.locale('ru');
+
+var DatePickerMixin = {
+
+};
+
 var DatePicker = React.createClass({
   render: function() {
     
-	moment.locale('ru');
+	
 	var day = this.props.day;
 	var label;
 	var date = moment().add(this.props.day,"day").format("L");
@@ -29,26 +37,33 @@ var DatePicker = React.createClass({
 
 module.exports = React.createClass({
   getInitialState: function() {
-    moment.locale("ru");
+    
     var dateStart = this.props.dateStart? this.props.dateStart : moment().format("L");
-	console.log(this.props);
+	//console.log(this.props.oneDay);
     var dateEnd = this.props.dateEnd? this.props.dateEnd : moment().add(1, "day").format("L");
     return {
       //formsCount: 1,
 	  dateStart: dateStart,
 	  dateEnd: dateEnd,
-      oneDay: true,
+      oneDay: this.props.oneDay,
     };
   },
-  setStartDate: function(date) {
-    console.log(date);
-	var dateEnd = moment(date,"DD.MM.YYYY").add(1,"day").format("L");
+  setStartDate: function(date, e) {
+    //console.log(date);
+	/*var dateEnd = moment(date,"DD.MM.YYYY").add(1,"day").format("L");
     this.setState({dateStart:date,dateEnd:dateEnd},function() {
-	  this.checkInput(this.refs.dateStart.getDOMNode());
-	});
+	  $(this.refs.dateStart.getDOMNode()).change();
+	}.bind(this));*/
+	var dateStart = moment(date,"DD.MM.YYYY").format("L");
+	var dateEnd = moment(date,"DD.MM.YYYY").add(1,"day").format("L");
+	var $dateStart = $(this.refs.dateStart.getDOMNode()).val(dateStart);
+    var $dateEnd = $(this.refs.dateEnd.getDOMNode()).val(dateEnd);
+    this.setState({dateStart:dateStart});
+    $(".date-picker.checked").removeClass("checked");
+    $(e.target).addClass("checked");
   },
   setOneDay: function(oneDay) {
-    
+    //this.props.setOneDay(oneDay);
     this.setState({oneDay:oneDay});
   },
   /* getInitialState: function() {
@@ -58,24 +73,20 @@ module.exports = React.createClass({
   }, */
   componentDidMount: function() {
   
-	moment.locale('ru');
+
 	
     var $dateStart = $(this.refs.dateStart.getDOMNode());
     var $dateEnd = $(this.refs.dateEnd.getDOMNode());
-	var checkInput = this.checkInput;
-	$dateStart.mask("99.99.9999",{
+	//var checkInput = this.checkInput;
+	$dateStart.on("blur change",this.checkInput).mask("99.99.9999",{
 	  placeholder:" ",
 	  autoclear:false,
-	  completed: function() {
-	    checkInput(this);
-	  }
+	  complete: this.checkInput
 	});
-	$dateEnd.mask("99.99.9999",{
+	$dateEnd.on("blur change",this.checkInput).mask("99.99.9999",{
 	  placeholder:" ",
 	  autoclear:false,
-	  completed: function() {
-	    checkInput(this);
-	  }
+	  complete: this.checkInput
 	});
     /* if(this.refs.input) {
 	 var $input = $(this.refs.dateStart.getDOMNode());
@@ -87,16 +98,20 @@ module.exports = React.createClass({
 	
 	
   },
-  //componentDIDUpdate: function(
-  checkInput: function(input) {
-    input = (input.nodeName) ? input : input.target;
-    var date = moment(input.value,"DD.MM.YYYY");
-	console.log(date);
-	if(date.isValid()) {
-	  $(input).removeClass("error");
-	} else {
-	  $(input).addClass("error");
-	}
+ /* componentWillReceiveProps: function(newProps) {
+  	console.log(newProps);
+  },*/
+  checkInput: function(e) {
+    //input = (input.nodeName) ? input : input.target;
+    var date = moment(e.target.value,"DD.MM.YYYY");
+	//console.log(target);
+	//if(this.props.validateOn) {
+		if(date.isValid()) {
+		  $(e.target).removeClass("error");
+		} else {
+		  $(e.target).addClass("error");
+		}		
+	//}
   },
   render: function() {
     /*var field1 = {
@@ -116,41 +131,37 @@ module.exports = React.createClass({
 	  i=0,
 	  datePickers = [];
 	while(i < countDatePickers) {
-      
+      if(i==3) datePickers.push(<br/>);
 	  datePickers.push(<DatePicker day={i} setDate={this.setStartDate} activeDate={this.state.dateStart} />);
 	  i++;
 	} 
     return (
-      <form className="form">
-        <div className="form__row">
+      <form className="form js-date-form">
+        <input type="hidden" name="oneDay" value={this.state.oneDay} />
+        
         <div className="form__row form__row_w50 form__row_first">
-          <label className="form__row-label" for="date_start">date_start</label> 
-          <input type="text" className="input form__row-input" ref="dateStart" value={this.state.dateStart} name="date_start" />
+          <label className="form__row-label" for="date_start">Начало действия</label> 
+          <input type="text" className="input form__row-input" ref="dateStart" defaultValue={this.state.dateStart} name="date_start" />
         </div>
         <div className="form__row form__row_w50 form__row_last">
-          <label className="form__row-label" for="date_end">date_end</label> 
-          <input type="text" disabled={this.state.oneDay} ref="dateEnd" value={this.state.dateEnd} className="input form__row-input" name="date_end" />
+          <label className="form__row-label" for="date_end">Окончание действия</label> 
+          <input type="text" disabled={this.state.oneDay==1} ref="dateEnd" defaultValue={this.state.dateEnd} className="input form__row-input" name="date_end" />
         </div>
-        </div>
-        <div className="form__row">
-		{datePickers.map(function(datePicker) {
+        
+        <div className="form__row form__row_end">
+		{datePickers.map(function(datePicker, i) {
 		  return datePicker;
 		})}
         </div>
-        <div className="form__row">
-          <a className={"checkbox"+(this.state.oneDay?" checked":"")} onClick={this.setOneDay.bind(null,true)}>
-            <label>
-            <input type="checkbox" />
+        <hr className="form__hr" />
+        <div className="form__row form__row_end">
+          <a className={"checkbox"+(this.state.oneDay==1?" checked":"")} onClick={this.setOneDay.bind(null,1)}>
             <div className="checkbox__imit"></div>
             <div className="checkbox__label">один день</div>
-            </label>
           </a>
-          <a className={"checkbox"+(!this.state.oneDay?" checked":"")} onClick={this.setOneDay.bind(null,false)}>
-            <label>
-            <input type="checkbox" />
+          <a className={"checkbox"+(this.state.oneDay==0?" checked":"")} onClick={this.setOneDay.bind(null,0)}>            
             <div className="checkbox__imit"></div>
             <div className="checkbox__label">несколько дней</div>
-            </label>
           </a>
         </div>
       </form>

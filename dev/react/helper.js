@@ -26,12 +26,13 @@ module.exports = {
 	//console.log("string:"+string+" | pattern:"+pattern);
     //var rule = $(input).data("rule");
 	//pattern = pattern || "";
+  if( ! pattern) return validate;
 	var rules = pattern.toString().split('|');
 	var l = rules.length;
 	
 	rules.forEach(function(rule) {
 	  //var rule = rules[i];
-	  console.log(rule+" : "+string);
+	  //console.log(rule+" : "+string);
 	  switch(rule) {
 
         case 'required': 
