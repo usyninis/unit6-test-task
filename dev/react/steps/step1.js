@@ -222,11 +222,14 @@ module.exports = React.createClass({
         });
       }
     });
-
+   
+    
 
     if(!errors) {
       var appData = {
         clients: clients,
+		dateStart: $(".js-date-form").find("[name=date_start]").val(),
+		dateEnd: $(".js-date-form").find("[name=date_end]").val(),
       };
       this.props.setStep(2,appData);      
     }
@@ -280,7 +283,7 @@ module.exports = React.createClass({
         <h2 className="title">Дата</h2>
         <div className="forms">
           
-            <FormDate />
+            <FormDate dateStart={this.state.appData.dateStart} dateEnd={this.state.appData.dateEnd} />
           
         </div>
         <button className="button" onClick={this.nextStep} type="button"><div className="inner">Продолжить</div></button>
