@@ -20,5 +20,44 @@ module.exports = {
 
     return true;
   },
+  validateString: function(string,pattern) {  
+	//var string = input.value;
+    var validate = false;
+	//console.log("string:"+string+" | pattern:"+pattern);
+    //var rule = $(input).data("rule");
+	//pattern = pattern || "";
+	var rules = pattern.toString().split('|');
+	var l = rules.length;
+	
+	rules.forEach(function(rule) {
+	  //var rule = rules[i];
+	  console.log(rule+" : "+string);
+	  switch(rule) {
+
+        case 'required': 
+        validate = (undefined == typeof string || string.length == 0) ? false : true;        
+        break;
+
+        case 'email':
+        var regExp = /^[\w-\.]+@[\w-]+\.[a-z]{2,10}$/i; 
+        validate = regExp.test(string);        
+        break;
+
+        case 'phone':
+        var regExp = /^\+\d[\d\(\)\ -]{4,20}\d$/; 
+        validate = regExp.test(string);        
+        break;
+
+      }
+      if( ! validate) {
+        //$(input).addClass("error");         
+        return false;
+      }	
+	});
+	
+	return validate;
+	
+  },
+  validateError: null
 
 }

@@ -48,13 +48,20 @@ module.exports = React.createClass({
     
     
   },
+  nextStep: function(typeId) {
+	if(typeId==1) {
+		this.props.setStep(1,this.props.appData);
+	}
+  },
   render: function() {
     //console.log(this.props);
   	return (
+      <div className="s-content">
+	  <h2 className="title">Тип пропуска</h2>
       <div className="skip-types">
         {this.props.types.map(function(type) {
           return (
-          <div onClick={this.props.setStep.bind(null,1)} className="skip-type">
+          <div onClick={this.nextStep.bind(null,type.id)} className="skip-type">
             <div className="skip-type__icon">
               <div className={"icon icon-inline icon-type"+type.id} />
             </div>
@@ -63,6 +70,7 @@ module.exports = React.createClass({
           </div>
           );
         }.bind(this))}
+      </div>
       </div>
   	);
   }

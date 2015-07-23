@@ -20,7 +20,10 @@ margin-bottom: 10px;
 }
 .form__row-label{
 	display: block;
-	color:#999;
+	color: @color-text-gray;
+	font-size:14px;
+	margin-bottom:7px;
+	line-height:1em;
 }
 
 .form__row-input{
@@ -28,11 +31,17 @@ margin-bottom: 10px;
 }
 .input{
 	border-radius: 3px;
-	border: 1px solid #e7e7e7;
+	border: 1px solid @color-border-input;
 	width: 100%;
-	padding: 8px 12px;
-	
+	padding: 0 6px;
+	line-height:46px;
+	height:46px;
+	color: @color-text;
 	.border-box();
+	&[disabled]{
+		background-color: #ecedee;
+		color:#969aa0;
+	}
 	&.error{
 		border-color: red;
 	}
@@ -50,20 +59,50 @@ margin-bottom: 10px;
   .border-radius(20px);
 }
 
+@button-border-radius: 5px;
+
+
 .button{
 	width: 200px;
-	background: @color-blue;
-	color:#fff;
-	border: none;
+	
+	position:relative;
+	border:none;
 	.border-box();
 	padding: 0;
 	margin: 0 auto;
 	height: 30px;
 	line-height: 30px;
 	display: block;
-	.outline{
-		background: #fff;
-		color: @color-blue;
+	.border-radius(@button-border-radius);
+	
+	.inner{
+		background: @color-blue;
+		color:#fff;
+		border: 1px solid @color-blue-border;
+	  position: absolute;
+	  z-index: 1;
+	  width: 100%;
+	  height: 100%;
+	  top: 0;
+	  left: 0;
+		
+	}
+	&.outline{
+		.inner{
+			background: #fff;
+			color: @color-blue;
+		}
+	}
+	&:after{
+	  content: ' ';
+	  display: block;
+	  position: absolute;
+	  left: 2px;
+	  right: 2px;
+	  top: 4px;
+	  height: 100%;
+	  background: rgba(0, 0, 0, 0.2);
+	  .border-radius(@button-border-radius);
 	}
 }
 

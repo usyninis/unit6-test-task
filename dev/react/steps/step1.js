@@ -7,6 +7,32 @@ var FormRow = React.createClass({
     }
     //this.props.handlerOnInputChange(e);
   },
+  componentDidMount: function() {
+    if(this.refs.input) {
+	  $(this.refs.input.getDOMNode()).mask();
+	  var $input = $(this.refs.input.getDOMNode());
+	  var mask = $input.data("masked");
+	  /* if(mask) {
+		$input.mask(mask);
+	  } */
+	  //console.log(mask);
+	  switch(mask) {
+	    case "phone":
+		  var handlerOnInputChange = this.props.handlerOnInputChange;
+		  $input.mask("+7 (999) 999-99-99",{
+		    autoclear: false,
+			placeholder: " ",
+			completed: function() {
+			  handlerOnInputChange(this);
+			}
+		  });
+		break;
+	    case "date":
+		  $input.mask("00000-000",{autoclear:false});
+		break;   
+	  } 
+	} 
+  },
   render: function() {
     var field = this.props.field;
     var rowClassName = "form__row";
@@ -16,67 +42,14 @@ var FormRow = React.createClass({
     return (
       <div className={rowClassName}>
         <label className="form__row-label" for={field.name}>{field.label}</label> 
-        <input type={field.type} data-rule={field.rule} className="input form__row-input" onFocus={this.onFocus} onChange={this.props.handlerOnInputChange} name={field.name} defaultValue={this.props.value} />
+        <input type={field.type} ref="input" data-rule={field.rule} data-masked={field.mask} className="input form__row-input" onFocus={this.onFocus} onChange={this.props.handlerOnInputChange} name={field.name} defaultValue={this.props.value} />
       </div>
     );
   }
 
 });
 
-var FormDate = React.createClass({
-  getInitialState: function() {
-    return {
-      formsCount: 1,
-      oneDay: true,
-    };
-  },
-  setOneDay: function(oneDay) {
-    
-    this.setState({oneDay:oneDay});
-  },
-  render: function() {
-    /*var field1 = {
-        label: "ФИО",
-        name: "name",
-        type: "text",
-      };*/
-    return (
-      <form className="form">
-        <div className="form__row">
-        <div className="form__row form__row_w50 form__row_first">
-          <label className="form__row-label" for="date_start">date_start</label> 
-          <input type="text" className="input form__row-input" name="date_start" />
-        </div>
-        <div className="form__row form__row_w50 form__row_first">
-          <label className="form__row-label" for="date_end">date_end</label> 
-          <input type="text" disabled={this.state.oneDay} className="input form__row-input" name="date_end" />
-        </div>
-        </div>
-        <div className="form__row">
-        <a className="date-picker">
-        сегодня
-        </a>
-        </div>
-        <div className="form__row">
-          <a className={"checkbox"+(this.state.oneDay?" checked":"")} onClick={this.setOneDay.bind(null,true)}>
-            <label>
-            <input type="checkbox" />
-            <div className="checkbox__imit"></div>
-            <div className="checkbox__label">один день</div>
-            </label>
-          </a>
-          <a className={"checkbox"+(!this.state.oneDay?" checked":"")} onClick={this.setOneDay.bind(null,false)}>
-            <label>
-            <input type="checkbox" />
-            <div className="checkbox__imit"></div>
-            <div className="checkbox__label">несколько дней</div>
-            </label>
-          </a>
-        </div>
-      </form>
-    );
-  }
-});  
+var FormDate = require("./form-date");
 
 var FormClient = React.createClass({
   propTypes: {
@@ -98,12 +71,14 @@ var FormClient = React.createClass({
       },{
         label: "Телефон",
         name: "phone",
+        mask: "phone",
         type: "text",
         className: "form__row_w50 form__row_first",
         rule: "required|phone"
       },{
         label: "Почта",
         name: "email",
+        //mask: "email",
         type: "text",
         className: "form__row_w50 form__row_last",
         rule: "required|email"
@@ -142,11 +117,16 @@ module.exports = React.createClass({
     appData: React.PropTypes.object.required
   },
   getInitialState: function () {
-    
+   // var appData = this.props.appData;
+	//if(!appData) {
+	//if(!appData.clients) {
+	 // appData.clients = [{}];
+	//}
+	//}
     return {
       //step: 1	
       appData: this.props.appData,
-      formsCount: 1,
+      //formsCount: 1,
       //clients: [
         //{}
       //]
@@ -161,7 +141,13 @@ module.exports = React.createClass({
     //console.log("validate: "+mask);
     //console.log("validate-input: "+input);
     //if(!mask) return false;
-    var string = input.value;
+	var $input = $(input);
+	var string = $input.val();
+	var pattern = $input.data("rule");
+	
+	return Helper.validateString(string,pattern);
+	
+    /* var string = input.value;
     var validate = false;
     var rule = $(input).data("rule");
     rule.split('|').map(function(rule) {
@@ -178,7 +164,7 @@ module.exports = React.createClass({
         break;
 
         case 'phone':
-        var regExp = /^\+\d[\d\(\)\ -]{4,14}\d$/; 
+        var regExp = /^\+\d[\d\(\)\ -]{4,20}\d$/; 
         validate = regExp.test(string);        
         break;
 
@@ -187,7 +173,7 @@ module.exports = React.createClass({
         //$(input).addClass("error");         
         return false;
       }
-    });
+    }); */
 
     //$(input).removeClass("error");
 
@@ -246,7 +232,7 @@ module.exports = React.createClass({
     }
   },
   handlerOnInputChange: function(e) {
-    //console.log(e.target);
+    console.log(e.target);
     //this.validateInput(e.target,'required');
     if(this.validateInput(e.target)) {
       //errors = true;
@@ -280,7 +266,7 @@ module.exports = React.createClass({
       <section className="s-step">
       <div className="s-content">
       <div className="s-content-step">
-        <h2>Данные посетителя</h2>
+        <h2 className="title">Данные посетителя</h2>
         <div className="forms">
           {forms.map(function(form){
             return (
@@ -291,13 +277,13 @@ module.exports = React.createClass({
           })}
           <a className="forms__button-add" onClick={this.addClient}>Добавить еще одного</a>
         </div>
-        <h2>Дата</h2>
+        <h2 className="title">Дата</h2>
         <div className="forms">
           
             <FormDate />
           
         </div>
-        <button className="button" onClick={this.nextStep} type="button">Продолжить</button>
+        <button className="button" onClick={this.nextStep} type="button"><div className="inner">Продолжить</div></button>
       </div>
       </div>
       </section>

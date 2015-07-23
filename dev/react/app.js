@@ -17,7 +17,7 @@ module.exports = React.createClass({
     return {
       step: 1,
       appData: {
-        clients: [{name:"demo"}]
+        clients: [{}]
       }
     };
   },
